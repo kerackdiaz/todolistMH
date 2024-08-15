@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
                 return response;
             }
 
-            User user = userRepository.findByEmail(login.Password());
+            User user = userRepository.findByUsername(login.Username());
             if(!user.getPassword().matches(login.Password())){
                 response.put("Error: ","La contraseña es incorrecta");
                 return response;

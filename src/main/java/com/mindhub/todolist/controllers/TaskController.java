@@ -24,8 +24,8 @@ public class TaskController {
 
     @Operation(summary = "Get all tasks", description = "Get all tasks from your account")
     @GetMapping("/all")
-    public ResponseEntity<?> getAllTasks(@RequestBody String userName) {
-        return ResponseEntity.ok(taskService.getAllTasks(userName).stream().map(TaskDTO::new).collect(Collectors.toList()));
+    public ResponseEntity<?> getAllTasks(@RequestParam String username) {
+        return ResponseEntity.ok(taskService.getAllTasks(username).stream().map(TaskDTO::new).collect(Collectors.toList()));
     }
 
     @Operation(summary = "Create a new task", description = "Create a new task")
