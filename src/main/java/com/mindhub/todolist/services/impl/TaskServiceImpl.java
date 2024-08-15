@@ -26,8 +26,8 @@ public class TaskServiceImpl implements TaskService {
     private UserRepository userRepository;
 
     @Override
-    public List<Task> getAllTasks(String email) {
-        User user = userRepository.findByEmail(email);
+    public List<Task> getAllTasks(String username) {
+        User user = userRepository.findByUsername(username);
         if (user == null) {
             return null;
         }
