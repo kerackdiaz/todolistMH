@@ -17,10 +17,10 @@ import java.util.stream.Collectors;
 public class TaskController {
 
     @Autowired
-    TaskService taskService;
+    private TaskService taskService;
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Operation(summary = "Get all tasks", description = "Get all tasks from your account")
     @GetMapping("/all")
