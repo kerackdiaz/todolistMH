@@ -4,8 +4,14 @@ import com.mindhub.todolist.dtos.LoginRecord;
 import com.mindhub.todolist.dtos.RegisterRecord;
 import com.mindhub.todolist.models.User;
 import com.mindhub.todolist.repositories.UserRepository;
+import com.mindhub.todolist.services.JwtUtilService;
 import com.mindhub.todolist.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -16,6 +22,15 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    @Autowired
+    private JwtUtilService jwtUtilService;
 
     @Override
     public String Register(RegisterRecord register){
@@ -35,8 +50,8 @@ public class UserServiceImpl implements UserService {
             if (userRepository.existsByEmail(register.email())){
                 return "El email ya esta registrado";
             }
-
-            User user = new User(register.username(), register.password(), register.email());
+            String pwrd = BCrypt.hashpw(register.password(), BCrypt.gensalt());
+            User user = new User(register.username(), pwrd, register.email());
 
             userRepository.save(user);
 
@@ -64,11 +79,14 @@ public class UserServiceImpl implements UserService {
             }
 
             User user = userRepository.findByUsername(login.Username());
-            if(!user.getPassword().matches(login.Password())){
+            if (!BCrypt.checkpw(login.Password(), user.getPassword())){
                 response.put("Error: ","La contraseña es incorrecta");
                 return response;
             }
-            response.put("hola", user);
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login.Username(), login.Password()));
+            final UserDetails userDetails = userDetailsService.loadUserByUsername(login.Username());
+            final String jwt = jwtUtilService.generateToken(userDetails);
+            response.put("Success", jwt);
             return response;
         }catch (Exception e){
             response.put("error", true);

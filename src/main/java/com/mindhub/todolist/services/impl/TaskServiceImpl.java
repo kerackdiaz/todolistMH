@@ -35,9 +35,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Map<String, Object> newTask(TaskRecord taskRecord) {
+    public Map<String, Object> newTask(TaskRecord taskRecord, String username) {
         Map<String, Object> response = new HashMap<>();
-        User user = userRepository.findByEmail(taskRecord.email());
+        User user = userRepository.findByUsername(username);
         if (user == null) {
             response.put("the email does not exist", ResponseEntity.badRequest());
             return response;
@@ -56,9 +56,9 @@ public class TaskServiceImpl implements TaskService {
 
 
     @Override
-    public Map<String, Object> updateTask( long taskId, TaskRecord taskRecord) {
+    public Map<String, Object> updateTask(String username, long taskId, TaskRecord taskRecord) {
         Map<String, Object> response = new HashMap<>();
-        User user = userRepository.findByEmail(taskRecord.email());
+        User user = userRepository.findByUsername(username);
         if (user == null) {
             response.put("the email does not exist", ResponseEntity.badRequest());
             return response;
@@ -88,8 +88,13 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Map<String, Object> deleteTask(long taskId) {
+    public Map<String, Object> deleteTask(String username, long taskId) {
         Map<String, Object> response = new HashMap<>();
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            response.put("the email does not exist", ResponseEntity.badRequest());
+            return response;
+        }
         try {
             Task task = taskRepository.findById(taskId).orElse(null);
             if (task == null) {

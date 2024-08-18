@@ -10,11 +10,9 @@ public interface TaskService {
 
     List<Task> getAllTasks(String email);
 
-    Map<String, Object> newTask(TaskRecord taskRecord);
+    Map<String, Object> newTask(TaskRecord taskRecord, String email);
 
+    Map<String, Object> updateTask(String email, long taskId, TaskRecord taskRecord);
 
-    Map<String, Object> updateTask(long taskId, TaskRecord taskRecord);
-
-
-    Map<String, Object> deleteTask(long taskId);
+    Map<String, Object> deleteTask(String email, long taskId);
 }
