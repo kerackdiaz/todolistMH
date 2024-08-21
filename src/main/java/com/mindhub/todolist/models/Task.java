@@ -78,4 +78,7 @@ public class Task {
     public void setUser(User user) {
         this.user = user;
     }
+
+    public void setId(long taskId) {
+    }
 }
